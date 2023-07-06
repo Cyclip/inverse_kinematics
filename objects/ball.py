@@ -54,9 +54,7 @@ class Ball(Object):
                 self.apply_collision(other)
 
         self.apply_wall_collision()
-        print(f"start pos: {self.pos}")
         self.pos += self.vel * dt
-        print(f"end pos: {self.pos}")
         self.vel += self.acc * dt
         self.acc = np.zeros(2, dtype=np.float64)
     
@@ -130,7 +128,6 @@ class Ball(Object):
             # Move the balls so they don't overlap
             overlap = (self.radius + other.radius) - dist
             self.pos += n * overlap * 0.75
-            print(f"collision: {self.pos}")
             other.pos -= n * overlap * 0.75
 
             # Apply friction
@@ -153,8 +150,6 @@ class Ball(Object):
             max(block.pos[0] - block.size[0] / 2, min(self.pos[0], block.pos[0] + block.size[0] / 2)),
             max(block.pos[1] - block.size[1] / 2, min(self.pos[1], block.pos[1] + block.size[1] / 2))
         ])
-        
-        print(f"closest point: {closest_point}")
 
         # Now, we can check if the ball is colliding with the block.
         truedist = np.linalg.norm(self.pos - closest_point)
@@ -165,7 +160,7 @@ class Ball(Object):
         dist = truedist
         
         if dist < self.radius:
-            print(f"collision, dist={dist}, radius={self.radius}, pos={self.pos}, closest_point={closest_point}")
+            # print(f"collision, dist={dist}, radius={self.radius}, pos={self.pos}, closest_point={closest_point}")
             # Calculate the impulse
             # dist may be 0 and we can't divide by 0
             if dist != 0:

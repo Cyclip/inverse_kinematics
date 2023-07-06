@@ -5,6 +5,7 @@ import numpy as np
 from objects.ball import Ball
 from objects.block import Block
 from objects.manager import ObjectManager
+from scenes.setter import SceneSetter
 
 class Simulation:
     """
@@ -17,6 +18,15 @@ class Simulation:
         pygame.init()
         pygame.display.set_caption("Inverse Kinematics")
     
+    def set_scene(self, scene: SceneSetter) -> None:
+        """
+        Set the scene
+
+        Args:
+        - scene: The scene setter
+        """
+        scene().set_scene(self)
+    
     def run(self) -> None:
         """
         Run the simulation
@@ -26,26 +36,6 @@ class Simulation:
 
         # Create a clock to limit the framerate
         clock = pygame.time.Clock()
-
-        # Create balls bouncing around
-        for i in range(15):
-            ball = Ball(
-                pos=(np.random.randint(300, const.RESOLUTION[0] - 300), np.random.randint(0, const.RESOLUTION[1] // 2)),
-                radius=15,
-                mass=np.random.randint(1, 10),
-                color=(np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255))
-            )
-            ball.apply_force(np.random.randint(-950, 950, 2))
-            self.objects.add(ball)
-        
-        # Create a block
-        block = Block(
-            pos=(const.RESOLUTION[0] // 2, const.RESOLUTION[1] // 1.3),
-            size=(800, 100),
-            color=(255, 0, 0),
-            mass=5
-        )
-        self.objects.add(block)
 
         self.running = True
         while self.running:

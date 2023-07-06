@@ -19,4 +19,4 @@ FRICTION_MULTIPLIER: float = 0.1
 WALL_RESTITUTION: float = 0.4
 
 # Grid size
-GRID_SIZE: int = 100
+GRID_SIZE: int = 50
