@@ -101,12 +101,21 @@ class ObjectManager:
         """
         self.__update_hashmap(dt)
     
+    def draw(self) -> None:
+        """
+        Draw all the objects
+        """
+        for obj in self.objects:
+            obj.draw(self.surface)
+    
     def __update_hashmap(self, dt: float) -> None:
         """
         Update each cell in the hashmap independently
         """
-        for obj_set in self.hashmap.values():
-            self.__update_cell(obj_set, dt)
+        # Update each cell
+        # Iterate over keys
+        for key in self.hashmap.keys():
+            self.__update_cell(key, dt)
         
         # Clear the hashmap
         self.hashmap = self.__create_hashmap()
@@ -115,14 +124,37 @@ class ObjectManager:
         for obj in self.objects:
             self.__register_object(obj)
     
-    def __update_cell(self, obj_set: Set[Object], dt: float) -> None:
+    def __update_cell(self, key: Tuple[int, int], dt: float) -> None:
         """
-        Update the objects in a cell
+        Update a cell in the hashmap
 
         Args:
-        - obj_set: The set of objects to update
+        - key: The key of the cell
+        - dt: Delta time
         """
-        for obj in obj_set:
-            # Update & draw the object
-            obj.update(dt)
-            obj.draw(self.surface)
+        # Get the neighbouring cells
+        neighbours = self.__get_neighbours(key)
+
+        # Update each object in the cell
+        for obj in self.hashmap[key]:
+            obj.update(dt, neighbours)
+    
+    def __get_neighbours(self, key: Tuple[int, int]) -> Set[Object]:
+        """
+        Get the neighbouring cells of a cell
+
+        Args:
+        - key: The key of the cell
+
+        Returns:
+        - The neighbouring cells
+        """
+        # Get neighbouring keys within the hashmap
+        neighbours = set()
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                new_key = (key[0] + i, key[1] + j)
+                if new_key in self.hashmap:
+                    neighbours |= self.hashmap[new_key]
+        
+        return neighbours

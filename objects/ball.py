@@ -37,16 +37,22 @@ class Ball(Object):
         self.mass = mass
         self.color = color
     
-    def update(self, dt: float) -> None:
+    def update(self, dt: float, others: Set[Ball]) -> None:
         """
         Update the ball
 
         Args:
         - dt: Delta time
+        - others: The other balls to check collisions with
         """
         self.apply_gravity()
         self.apply_friction()
-        # self.apply_drag()
+
+        # Check for collisions
+        for other in others:
+            if other != self:
+                self.apply_collision(other)
+
         self.apply_wall_collision()
         self.pos += self.vel * dt
         self.vel += self.acc * dt
@@ -102,7 +108,27 @@ class Ball(Object):
         Args:
         - other: The other ball
         """
-        raise NotImplementedError
+        # Check if the balls are colliding
+        dist = np.linalg.norm(self.pos - other.pos)
+
+        if dist < self.radius + other.radius:
+            # Calculate the impulse
+            n = (self.pos - other.pos) / dist
+            v = self.vel - other.vel
+            j = -(1 + const.RESTITUTION) * np.dot(v, n) / (1 / self.mass + 1 / other.mass)
+
+            # Apply the impulse
+            self.apply_impulse(j * n)
+            other.apply_impulse(-j * n)
+
+            # Move the balls so they don't overlap
+            overlap = (self.radius + other.radius) - dist
+            self.pos += n * overlap * 0.6
+            other.pos -= n * overlap * 0.6
+
+            # Apply friction
+            self.apply_force(-self.vel * const.FRICTION_MULTIPLIER)
+            other.apply_force(-other.vel * const.FRICTION_MULTIPLIER)
 
     def apply_wall_collision(self) -> None:
         """

@@ -26,15 +26,15 @@ class Simulation:
         # Create a clock to limit the framerate
         clock = pygame.time.Clock()
 
-        # Create 10 balls bouncing around
-        for i in range(10):
+        # Create balls bouncing around
+        for i in range(150):
             ball = Ball(
                 pos=(np.random.randint(0, const.RESOLUTION[0]), np.random.randint(0, const.RESOLUTION[1])),
                 radius=np.random.randint(10, 30),
                 mass=np.random.randint(1, 10),
                 color=(np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255))
             )
-            ball.apply_force(np.random.randint(-550, 550, 2))
+            ball.apply_force(np.random.randint(-650, 650, 2))
             self.objects.add(ball)
 
         self.running = True
@@ -49,6 +49,12 @@ class Simulation:
 
             # Clear the screen
             self.surface.fill((0, 0, 0))
+
+            # draw grid
+            for i in range(const.RESOLUTION[0] // const.GRID_SIZE):
+                pygame.draw.line(self.surface, (255, 255, 255), (i * const.GRID_SIZE, 0), (i * const.GRID_SIZE, const.RESOLUTION[1]))
+            for j in range(const.RESOLUTION[1] // const.GRID_SIZE):
+                pygame.draw.line(self.surface, (255, 255, 255), (0, j * const.GRID_SIZE), (const.RESOLUTION[0], j * const.GRID_SIZE))
 
             # Update the objects
             self.__update_objects(dt)
@@ -66,3 +72,4 @@ class Simulation:
         - dt: Delta time
         """
         self.objects.update(dt)
+        self.objects.draw()
