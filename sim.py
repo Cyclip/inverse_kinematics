@@ -3,6 +3,7 @@ import constants as const
 import numpy as np
 
 from objects.ball import Ball
+from objects.block import Block
 from objects.manager import ObjectManager
 
 class Simulation:
@@ -27,15 +28,24 @@ class Simulation:
         clock = pygame.time.Clock()
 
         # Create balls bouncing around
-        for i in range(150):
+        for i in range(15):
             ball = Ball(
-                pos=(np.random.randint(0, const.RESOLUTION[0]), np.random.randint(0, const.RESOLUTION[1])),
-                radius=np.random.randint(10, 30),
+                pos=(np.random.randint(300, const.RESOLUTION[0] - 300), np.random.randint(0, const.RESOLUTION[1] // 2)),
+                radius=15,
                 mass=np.random.randint(1, 10),
                 color=(np.random.randint(0, 255), np.random.randint(0, 255), np.random.randint(0, 255))
             )
-            ball.apply_force(np.random.randint(-650, 650, 2))
+            ball.apply_force(np.random.randint(-950, 950, 2))
             self.objects.add(ball)
+        
+        # Create a block
+        block = Block(
+            pos=(const.RESOLUTION[0] // 2, const.RESOLUTION[1] // 1.3),
+            size=(800, 100),
+            color=(255, 0, 0),
+            mass=5
+        )
+        self.objects.add(block)
 
         self.running = True
         while self.running:
@@ -52,9 +62,9 @@ class Simulation:
 
             # draw grid
             for i in range(const.RESOLUTION[0] // const.GRID_SIZE):
-                pygame.draw.line(self.surface, (255, 255, 255), (i * const.GRID_SIZE, 0), (i * const.GRID_SIZE, const.RESOLUTION[1]))
+                pygame.draw.line(self.surface, (4, 4, 4), (i * const.GRID_SIZE, 0), (i * const.GRID_SIZE, const.RESOLUTION[1]))
             for j in range(const.RESOLUTION[1] // const.GRID_SIZE):
-                pygame.draw.line(self.surface, (255, 255, 255), (0, j * const.GRID_SIZE), (const.RESOLUTION[0], j * const.GRID_SIZE))
+                pygame.draw.line(self.surface, (4, 4, 4), (0, j * const.GRID_SIZE), (const.RESOLUTION[0], j * const.GRID_SIZE))
 
             # Update the objects
             self.__update_objects(dt)

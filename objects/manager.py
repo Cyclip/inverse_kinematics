@@ -1,5 +1,6 @@
 from typing import *
 from objects.obj import Object
+from objects.block import Block
 import pygame
 import constants as const
 
@@ -13,7 +14,10 @@ class ObjectManager:
         """
         Create a new object manager
         """
-        self.objects = set()
+        # Moving objects
+        self.dynamic_objects = set()
+        # Static objects
+        self.static_objects = set()
         self.hashmap = self.__create_hashmap()
         self.surface = None
     
@@ -78,8 +82,11 @@ class ObjectManager:
         Args:
         - obj: The object to add
         """
-        self.objects.add(obj)
-        self.__register_object(obj)
+        if isinstance(obj, Block):
+            self.static_objects.add(obj)
+        else:
+            self.dynamic_objects.add(obj)
+            self.__register_object(obj)
     
     def remove(self, obj: Object) -> None:
         """
@@ -88,7 +95,7 @@ class ObjectManager:
         Args:
         - obj: The object to remove
         """
-        self.objects.remove(obj)
+        self.dynamic_objects.remove(obj)
         grid_pos = self.__pos_to_grid(obj.pos)
         self.hashmap[grid_pos].remove(obj)
     
@@ -105,7 +112,7 @@ class ObjectManager:
         """
         Draw all the objects
         """
-        for obj in self.objects:
+        for obj in self.dynamic_objects | self.static_objects:
             obj.draw(self.surface)
     
     def __update_hashmap(self, dt: float) -> None:
@@ -121,7 +128,7 @@ class ObjectManager:
         self.hashmap = self.__create_hashmap()
 
         # Re-register all the objects
-        for obj in self.objects:
+        for obj in self.dynamic_objects:
             self.__register_object(obj)
     
     def __update_cell(self, key: Tuple[int, int], dt: float) -> None:
@@ -133,7 +140,8 @@ class ObjectManager:
         - dt: Delta time
         """
         # Get the neighbouring cells
-        neighbours = self.__get_neighbours(key)
+        # Include static objects
+        neighbours = self.__get_neighbours(key) | self.static_objects
 
         # Update each object in the cell
         for obj in self.hashmap[key]:
