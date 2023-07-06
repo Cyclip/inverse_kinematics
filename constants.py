@@ -9,11 +9,14 @@ RESOLUTION: Tuple[int, int] = (1200, 700)
 # Force multiplier
 FORCE_MULTIPLIER: float = 10
 
-# Friction multiplier
+# Air friction multiplier
+DRAG_FRICTION_MULTIPLIER: float = 0.05
+
+# Friction multiplier (when colliding with another ball or a wall)
 FRICTION_MULTIPLIER: float = 0.1
 
-# Drag multiplier
-DRAG_MULTIPLIER: float = 0.1
-
 # Restitution
-RESTITUTION: float = 0.5
+RESTITUTION: float = 0.4
+
+# Grid size
+GRID_SIZE: int = 100

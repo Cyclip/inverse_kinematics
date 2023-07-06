@@ -4,6 +4,7 @@ import pygame
 import constants as const
 import numpy as np
 
+from objects.obj import Object
 
 """
 This module contains the Ball class.
@@ -23,11 +24,12 @@ Methods:
 - apply_wall_collision(self) -> None
 """
 
-class Ball:
+class Ball(Object):
     def __init__(self, pos: Tuple[float, float], radius: float, mass: float, color: Tuple[int, int, int]) -> None:
         """
         Create a new ball
         """
+        super().__init__(pos)
         self.pos = np.array(pos, dtype=np.float64)
         self.vel = np.zeros(2, dtype=np.float64)
         self.acc = np.zeros(2, dtype=np.float64)
@@ -91,16 +93,7 @@ class Ball:
         Apply friction to the ball:
             F = -μ * v
         """
-        self.apply_force(-self.vel * const.FRICTION_MULTIPLIER)
-
-    def apply_drag(self) -> None:
-        """
-        Apply drag to the ball
-        Drag is a force that is proportional to the square of the velocity
-        It is used to simulate air resistance:
-            F = -μ * v^2
-        """
-        self.apply_force(-self.vel * np.linalg.norm(self.vel) * const.DRAG_MULTIPLIER)
+        self.apply_force(-self.vel * const.DRAG_FRICTION_MULTIPLIER)
 
     def apply_collision(self, other: Ball) -> None:
         """
