@@ -1,6 +1,7 @@
 from typing import *
 from objects.obj import Object
 from objects.block import Block
+from arm.arm import Arm
 import pygame
 import constants as const
 
@@ -18,6 +19,9 @@ class ObjectManager:
         self.dynamic_objects = set()
         # Static objects
         self.static_objects = set()
+        # Arms
+        self.arms = set()
+
         self.hashmap = self.__create_hashmap()
         self.surface = None
     
@@ -84,6 +88,8 @@ class ObjectManager:
         """
         if isinstance(obj, Block):
             self.static_objects.add(obj)
+        elif isinstance(obj, Arm):
+            self.arms.add(obj)
         else:
             self.dynamic_objects.add(obj)
             self.__register_object(obj)
@@ -107,12 +113,15 @@ class ObjectManager:
         - dt: Delta time
         """
         self.__update_hashmap(dt)
+
+        for arm in self.arms:
+            arm.update(dt)
     
     def draw(self) -> None:
         """
         Draw all the objects
         """
-        for obj in self.dynamic_objects | self.static_objects:
+        for obj in self.dynamic_objects | self.static_objects | self.arms:
             obj.draw(self.surface)
     
     def __update_hashmap(self, dt: float) -> None:

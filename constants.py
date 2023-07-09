@@ -20,3 +20,6 @@ WALL_RESTITUTION: float = 0.4
 
 # Grid size
 GRID_SIZE: int = 50
+
+# Arm width
+ARM_WIDTH: int = 10
