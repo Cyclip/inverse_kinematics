@@ -45,6 +45,16 @@ class Arm:
         # Iteratively update link positions
         self.__update_links()
     
+    def set_joint_angles(self, angles: np.ndarray) -> None:
+        """
+        Set the joint angles
+        """
+        if angles.shape != self.joints.shape:
+            raise ValueError("angles must have the same shape as self.joints")
+
+        self.joints = angles
+        self.__update_links()
+    
     def __update_links(self, start=1) -> None:
         """
         Update the starting positions of each link
@@ -97,12 +107,17 @@ class Arm:
         Draw the arm
         """
         # Draw links
-        for i in range(self.__num_links - 1):
+        for i in range(self.__num_links):
+            if i == self.__num_links - 1:
+                end = self.get_end_effector_pos()
+            else:
+                end = self.links[i + 1]
+
             pygame.draw.line(
                 surface,
                 self.__color,
                 self.links[i],
-                self.links[i + 1],
+                end,
                 const.ARM_WIDTH,
             )
         
@@ -114,6 +129,20 @@ class Arm:
                 self.links[i],
                 const.ARM_WIDTH,
             )
+        
+        # Draw end point of arm
+        pygame.draw.circle(
+            surface,
+            (0, 255, 0),
+            self.get_end_effector_pos(),
+            const.ARM_WIDTH,
+        )
+    
+    def get_end_effector_pos(self) -> np.ndarray:
+        """
+        Get the end effector position
+        """
+        return self.__get_end_pos(self.__num_links - 1)
     
     def update(self, dt: float) -> None:
         """
@@ -124,4 +153,4 @@ class Arm:
         self.__update_links()
 
         # print end position
-        print(self.__get_end_pos(self.__num_links - 1))
+        print(self.get_end_effector_pos())
