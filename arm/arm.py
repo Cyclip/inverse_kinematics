@@ -148,9 +148,4 @@ class Arm:
         """
         Update the arm
         """
-        # remove this later, just for testing
-        self.joints += np.random.uniform(-0.05, 0.05, self.__num_links)
-        self.__update_links()
-
-        # print end position
-        print(self.get_end_effector_pos())
+        pass

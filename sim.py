@@ -6,6 +6,7 @@ from objects.ball import Ball
 from objects.block import Block
 from objects.manager import ObjectManager
 from scenes.setter import SceneSetter
+from arm.controllers.base import Controller
 
 class Simulation:
     """
@@ -25,7 +26,17 @@ class Simulation:
         Args:
         - scene: The scene setter
         """
-        scene().set_scene(self)
+        self.scene = scene()
+        self.scene.set_scene(self)
+    
+    def set_controller(self, controller: Controller) -> None:
+        """
+        Set the controller
+
+        Args:
+        - controller: The controller
+        """
+        self.scene.set_controller(controller)
     
     def run(self) -> None:
         """
@@ -57,6 +68,7 @@ class Simulation:
                 pygame.draw.line(self.surface, (4, 4, 4), (0, j * const.GRID_SIZE), (const.RESOLUTION[0], j * const.GRID_SIZE))
 
             # Update the objects
+            self.scene.update(self, dt)
             self.__update_objects(dt)
             
             pygame.display.update()
