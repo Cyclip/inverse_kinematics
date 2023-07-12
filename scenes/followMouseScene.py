@@ -18,7 +18,6 @@ class FollowMouseScene(SceneSetter):
         - sim: The simulation
         """
         super().__init__()
-        self.alpha = 0.001
     
     def set_scene(self, sim: Any) -> None:
         """
@@ -26,9 +25,12 @@ class FollowMouseScene(SceneSetter):
         """
         # Create an arm
         self.arm = Arm(
-            np.array([300, 300]),
+            np.array([
+                const.RESOLUTION[0] // 2,
+                const.RESOLUTION[1] // 2
+            ]),
             75,
-            2,
+            5,
             (255, 255, 255)
         )
 
@@ -38,7 +40,7 @@ class FollowMouseScene(SceneSetter):
         """
         Set the controller
         """
-        self.controller = controller(self.alpha)
+        self.controller = controller
         
     def update(self, sim: Any, dt: float) -> None:
         """

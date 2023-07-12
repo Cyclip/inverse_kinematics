@@ -28,7 +28,7 @@ class Arm:
         """
         self.pos = np.array(pos, dtype=np.float64)
         self.__link_length = link_length
-        self.__num_links = num_links
+        self.num_links = num_links
         self.__color = color
         self.__joint_color = joint_color
 
@@ -52,7 +52,9 @@ class Arm:
         if angles.shape != self.joints.shape:
             raise ValueError("angles must have the same shape as self.joints")
 
-        self.joints = angles
+        range_size = Arm.ROT_END - Arm.ROT_START + 1
+        angles = Arm.ROT_START + (angles - Arm.ROT_START) % range_size
+
         self.__update_links()
     
     def __update_links(self, start=1) -> None:
@@ -77,7 +79,7 @@ class Arm:
         # first set the starting position of the first link
         self.links[0] = self.pos
 
-        for i in range(start, self.__num_links):
+        for i in range(start, self.num_links):
             # Get end position of previous link
             prev_end = self.__get_end_pos(i - 1)
 
@@ -107,8 +109,8 @@ class Arm:
         Draw the arm
         """
         # Draw links
-        for i in range(self.__num_links):
-            if i == self.__num_links - 1:
+        for i in range(self.num_links):
+            if i == self.num_links - 1:
                 end = self.get_end_effector_pos()
             else:
                 end = self.links[i + 1]
@@ -122,7 +124,7 @@ class Arm:
             )
         
         # Draw joints
-        for i in range(self.__num_links):
+        for i in range(self.num_links):
             pygame.draw.circle(
                 surface,
                 self.__joint_color,
@@ -142,10 +144,24 @@ class Arm:
         """
         Get the end effector position
         """
-        return self.__get_end_pos(self.__num_links - 1)
+        return self.__get_end_pos(self.num_links - 1)
     
     def update(self, dt: float) -> None:
         """
         Update the arm
         """
         pass
+
+    def compute_error(self, target: np.ndarray) -> float:
+        """
+        Compute the error between the current end effector position and the target position
+
+        Args:
+        - target: The target position
+
+        Returns:
+        - The error
+        """
+        end_effector_pos = self.get_end_effector_pos()
+        error = target - end_effector_pos
+        return error
