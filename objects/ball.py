@@ -163,48 +163,37 @@ class Ball(Object):
         Args:
         - block: The block to collide with
         """
-        # We will use Axis-Aligned Bounding Boxes (AABB) to check for collisions
-        # between the ball and the block.
-        
-        # First, we need to find the closest point on the block to the ball.
-        # We can do this by clamping the ball's position to the block's bounds.
-        closest_point = np.array([
-            max(block.pos[0] - block.size[0] / 2, min(self.pos[0], block.pos[0] + block.size[0] / 2)),
-            max(block.pos[1] - block.size[1] / 2, min(self.pos[1], block.pos[1] + block.size[1] / 2))
-        ])
+        nearest = np.clip(self.pos, block.pos, block.pos + block.size)
 
-        # Now, we can check if the ball is colliding with the block.
-        truedist = np.linalg.norm(self.pos - closest_point)
-        
-        # dist may be 0 or negative if the ball is inside the block
-        # clamp
-        # dist = max(0.00001, truedist)
-        dist = truedist
-        
-        if dist < self.radius:
-            # print(f"collision, dist={dist}, radius={self.radius}, pos={self.pos}, closest_point={closest_point}")
-            # Calculate the impulse
-            # dist may be 0 and we can't divide by 0
-            if dist != 0:
-                n = (self.pos - closest_point) / dist
-            else:
-                n = np.array([1, 0])
+        dist = np.linalg.norm(self.pos - nearest)
 
+        if dist <= self.radius:
+            overlap = self.radius - dist
+            
+            if (self.pos[0] < block.pos[0] or self.pos[0] > block.pos[0] + block.size[0]) and (self.pos[1] < block.pos[1] or self.pos[1] > block.pos[1] + block.size[1]):
+                self.pos += (self.pos - nearest) / dist * overlap
+                return
+            
+            # dont divide by 0
+            if dist == 0:
+                dist = 1
+            if overlap == 0:
+                overlap = 1
+
+            # move the ball so it doesn't overlap
+            self.pos += (self.pos - nearest) / dist * overlap
+
+            # calculate the impulse
+            # we do this by calculating the velocity of the ball
+            # at the point of collision
+            # then we calculate the impulse using the velocity
+            # and the normal of the collision
             v = self.vel
-            # use block's restitution, friction, and mass
-            j = -(1 + block.restitution) * np.dot(v, n) / (1 / self.mass + 1 / block.mass)
+            n = (self.pos - nearest) / dist
+            j = -(block.restitution) * np.dot(v, n) / (1 / self.mass + 1 / block.mass)
 
-            # Apply the impulse
+            # apply the impulse
             self.apply_impulse(j * n)
-
-            # Move the ball so it doesn't overlap
-            overlap = self.radius - truedist
-            # we multiply by 0.75 to prevent the ball from getting stuck inside the block
-            self.pos += n * overlap
-
-            # Apply friction
-            self.apply_force(-self.vel * block.friction)
-
 
 
     def apply_wall_collision(self) -> None:

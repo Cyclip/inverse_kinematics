@@ -56,7 +56,7 @@ class Simulation:
             
             # Get delta time
             # dt = clock.tick() / 1000
-            dt = 0.2
+            dt = 0.2 / 1
 
             # Clear the screen
             self.surface.fill((0, 0, 0))

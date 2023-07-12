@@ -32,7 +32,7 @@ class Block(Object):
         size: Tuple[float, float],
         color: Tuple[int, int, int],
         mass: float = 1,
-        restitution: float = 0.8,
+        restitution: float = 0.9,
         friction: float = 0.1
     ) -> None:
         """
@@ -45,7 +45,16 @@ class Block(Object):
         self.mass = mass
         self.restitution = restitution
         self.friction = friction
-    
+
+        # calculate vertices
+        # top left corner is self.pos
+        self.vertices = np.array([
+            self.pos,
+            self.pos + np.array([self.size[0], 0]),
+            self.pos + np.array([self.size[0], self.size[1]]),
+            self.pos + np.array([0, self.size[1]])
+        ])
+
     def update(self, dt: float) -> None:
         """
         Update the block
@@ -62,13 +71,13 @@ class Block(Object):
         Args:
         - surface: The surface to draw on
         """
-        # Draw an outline
+        # draw outline
         pygame.draw.rect(
             surface,
             (255, 255, 255),
-            (
-                self.pos[0] - self.size[0] // 2,
-                self.pos[1] - self.size[1] // 2,
+            pygame.Rect(
+                self.pos[0],
+                self.pos[1],
                 self.size[0],
                 self.size[1]
             ),

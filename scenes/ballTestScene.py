@@ -45,8 +45,18 @@ class BallTestScene(SceneSetter):
     
         # Create a block
         block = Block(
-            np.array([const.RESOLUTION[0] / 2, const.RESOLUTION[1] / 2]),
-            np.array([const.RESOLUTION[0] / 2, const.RESOLUTION[1] / 2]),
+            (0, const.RESOLUTION[1] - 200),
+            (const.RESOLUTION[0] // 2, 100),
             0
         )
         sim.objects.add(block)
+    
+    def update(self, sim: Any, dt: float) -> None:
+        """
+        Update the scene
+
+        Args:
+        - sim: The simulation
+        - dt: Delta time
+        """
+        pass

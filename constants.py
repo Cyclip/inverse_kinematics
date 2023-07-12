@@ -8,6 +8,9 @@ GRAVITY: float = 9.8
 
 # Sim resolution
 RESOLUTION: Tuple[int, int] = (1200, 700)
+# Ease of use
+SCREEN_WIDTH: int = RESOLUTION[0]
+SCREEN_HEIGHT: int = RESOLUTION[1]
 
 # Force multiplier
 FORCE_MULTIPLIER: float = 10
