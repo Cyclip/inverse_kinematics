@@ -73,6 +73,39 @@ class MoveArm(Task):
         return f"Move arm to {round(self.target[0])}, {round(self.target[1])} (distance: {round(np.linalg.norm(self.arm.get_end_effector_pos() - self.target))})))"
 
 
+class MoveRelative(Task):
+    """
+    Task to move the arm to a certain position relative to the arm's current position
+    """
+    def __init__(self, controller: Controller, arm: Arm, change: np.ndarray):
+        super().__init__(controller, arm)
+        self.change = change
+        self.target = None
+        self.updated = False
+
+    def update(self) -> None:
+        # on first update, set the target
+        if self.updated == False:
+            self.target = self.arm.get_end_effector_pos() + self.change
+            self.updated = True
+
+        # Use controller to move the arm
+        self.controller.update(self.arm, self.target)
+
+        # Check if the arm is at the target
+        armpos = self.arm.get_end_effector_pos()
+        if np.linalg.norm(armpos - self.target) < const.ARM_END_RADIUS:
+            self.done = True
+            self.arm.vel = np.zeros(2, dtype=np.float64)
+            self.arm.acc = np.zeros(2, dtype=np.float64)
+    
+    def __str__(self) -> str:
+        relative = f"{round(self.change[0])}, {round(self.change[1])}"
+        target = f"{round(self.target[0])}, {round(self.target[1])}" if self.updated else "None"
+        distance = round(np.linalg.norm(self.arm.get_end_effector_pos() - self.target)) if self.updated else "None"
+        return f"Move arm by {relative} (target: {target}, distance: {distance})"
+
+
 class MoveToBall(Task):
     """
     Special task to move the arm to a ball

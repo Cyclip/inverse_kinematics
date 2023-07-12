@@ -7,7 +7,7 @@ import constants as const
 from objects.ball import Ball
 from objects.block import Block
 from tasks import taskManager
-from tasks.task import move_ball, follow_linear_path, Wait
+from tasks.task import follow_linear_path, Wait, MoveToBall, HoldBall, MoveArm, ReleaseBall, MoveRelative
 
 class FillJarScene(SceneSetter):
     """
@@ -18,7 +18,7 @@ class FillJarScene(SceneSetter):
     jar with all the balls on the left jar.
     """
     # Number of balls in each row and column
-    NUM_BALLS = 2
+    NUM_BALLS = 3
 
     def __init__(self) -> None:
         """
@@ -72,16 +72,22 @@ class FillJarScene(SceneSetter):
         # Create the task manager
         self.taskManager = taskManager.TaskManager(self.arm)
 
+        controller = self.controller
+        arm = self.arm
+
+        self.taskManager.add_task(
+            Wait(controller, arm, 30)
+        )
+
         # Create a move_ball task for each ball
         for ball in self.balls:
-            self.taskManager.add_tasks(
-                move_ball(
-                    self.controller,
-                    self.arm,
-                    ball,
-                    self.rightJar[1].pos - np.array([0, 250])
-                )
-            )
+            self.taskManager.add_tasks([
+                MoveToBall(controller, arm, ball),                                  # Move the arm to the ball
+                HoldBall(controller, arm, ball),                                    # Hold the ball
+                MoveRelative(controller, arm, np.array([0, -50])),                   # Move the arm up
+                MoveArm(controller, arm, self.rightJar[1].pos - np.array([0, 250])),# Move the arm to the right jar
+                ReleaseBall(controller, arm, ball)                                  # Release the ball into the jar
+            ])
 
             # Wait for 1 second
             self.taskManager.add_task(

@@ -200,10 +200,10 @@ class Ball(Object):
             # Move the ball so it doesn't overlap
             overlap = self.radius - truedist
             # we multiply by 0.75 to prevent the ball from getting stuck inside the block
-            self.pos += n * overlap * 0.75
+            self.pos += n * overlap
 
             # Apply friction
-            # self.apply_force(-self.vel * block.friction)
+            self.apply_force(-self.vel * block.friction)
 
 
 
