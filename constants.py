@@ -34,4 +34,4 @@ ARM_WIDTH: int = 10
 FONT: pygame.font.Font = pygame.font.SysFont("Arial", 20)
 
 # Arm end radius
-ARM_END_RADIUS: int = 12
+ARM_END_RADIUS: int = 13

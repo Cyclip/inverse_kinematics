@@ -40,7 +40,7 @@ class BallTestScene(SceneSetter):
                 )
             
             # Give the ball a random velocity
-            ball.vel = np.random.uniform(-100, 100, 2)
+            ball.vel = np.random.uniform(-30, 30, 2)
             sim.objects.add(ball)
     
         # Create a block

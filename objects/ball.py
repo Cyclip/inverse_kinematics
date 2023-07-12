@@ -149,8 +149,8 @@ class Ball(Object):
 
             # Move the balls so they don't overlap
             overlap = (self.radius + other.radius) - dist
-            self.pos += n * overlap * 0.75
-            other.pos -= n * overlap * 0.75
+            self.pos += n * overlap * 0.2
+            other.pos -= n * overlap * 0.2
 
             # Apply friction
             self.apply_force(-self.vel * const.FRICTION_MULTIPLIER)

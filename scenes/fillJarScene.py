@@ -18,7 +18,7 @@ class FillJarScene(SceneSetter):
     jar with all the balls on the left jar.
     """
     # Number of balls in each row and column
-    NUM_BALLS = 3
+    NUM_BALLS = 4
 
     def __init__(self) -> None:
         """
@@ -40,8 +40,8 @@ class FillJarScene(SceneSetter):
                 const.RESOLUTION[0] // 2,
                 const.RESOLUTION[1] // 2 - 100
             ]),
-            100,
-            3,
+            95,
+            5,
             (255, 255, 255),
             (255, 0, 0)
         )
@@ -85,7 +85,7 @@ class FillJarScene(SceneSetter):
                 MoveToBall(controller, arm, ball),                                  # Move the arm to the ball
                 HoldBall(controller, arm, ball),                                    # Hold the ball
                 MoveRelative(controller, arm, np.array([0, -50])),                   # Move the arm up
-                MoveArm(controller, arm, self.rightJar[1].pos - np.array([0, 250])),# Move the arm to the right jar
+                MoveArm(controller, arm, self.rightJar[1].pos - np.array([-110, 250])),# Move the arm to the right jar
                 ReleaseBall(controller, arm, ball)                                  # Release the ball into the jar
             ])
 
@@ -105,24 +105,18 @@ class FillJarScene(SceneSetter):
         )
 
     def __make_jars(self, sim: Any) -> None:
-        y = const.RESOLUTION[1] // 2
-        mid = const.RESOLUTION[0] // 2
-        distanceFromMiddle = 80
+        y = const.RESOLUTION[1] // 2 - 50
+        # distance from edges
+        d = 300
 
         self.leftJar = self.__make_jar(
             sim,
-            np.array([
-                mid - distanceFromMiddle,
-                y
-            ])
+            np.array([d, y])
         )
 
         self.rightJar = self.__make_jar(
             sim,
-            np.array([
-                mid + distanceFromMiddle + 125,
-                y
-            ])
+            np.array([const.RESOLUTION[0] - d - 200, y])
         )
     
     def __make_jar(self, sim: Any, offset: np.ndarray) -> List[Block]:
@@ -136,33 +130,24 @@ class FillJarScene(SceneSetter):
         Returns:
         - The jar
         """
-        # Left, bottom, right
         jar = [
+            # left
             Block(
-                pos=np.array([
-                    offset[0] - 150,
-                    offset[1] + 50,
-                ]),
-                size=np.array([50, 250]),
-                color=(255, 255, 255)
+                offset + np.array([0, 0]),
+                np.array([50, 200]),
+                (255, 255, 255)
             ),
-
+            # bottom
             Block(
-                pos=np.array([
-                    offset[0] - 76,
-                    offset[1] + 150
-                ]),
-                size=np.array([100, 50]),
-                color=(255, 255, 255)
+                offset + np.array([0, 200]),
+                np.array([200, 50]),
+                (255, 255, 255)
             ),
-            
+            # right
             Block(
-                pos=np.array([
-                    offset[0] - 1,
-                    offset[1] + 50,
-                ]),
-                size=np.array([50, 250]),
-                color=(255, 255, 255)
+                offset + np.array([150, 0]),
+                np.array([50, 200]),
+                (255, 255, 255)
             )
         ]
 
@@ -179,21 +164,21 @@ class FillJarScene(SceneSetter):
             for j in range(self.NUM_BALLS):
                 self.balls.append(
                     Ball(
-                        np.array([
-                            self.leftJar[0].pos[0] + i * 20 + 50,
-                            self.leftJar[0].pos[1] - j * 20 - 100
-                        ]),
-                        10,
+                        self.leftJar[1].pos + np.array([20 * i + 70, -20 * j - 150]),
+                        15,
                         0.5,
-                        (255, 255, 255)
+                        # purple
+                        (255, 0, 255)
                     )
                 )
 
                 # Add the ball to the simulation
                 sim.objects.add(self.balls[-1])
 
-                # random vel ball
-                self.balls[-1].vel = np.random.normal(0, 10, 2)
+                # random velocity
+                self.balls[-1].apply_impulse(
+                    np.random.uniform(-10, 10, 2)
+                )
     
     def update(self, sim: Any, dt: float) -> None:
         """
