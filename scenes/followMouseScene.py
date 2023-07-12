@@ -35,12 +35,7 @@ class FollowMouseScene(SceneSetter):
         )
 
         sim.objects.add(self.arm)
-    
-    def set_controller(self, controller: Controller) -> None:
-        """
-        Set the controller
-        """
-        self.controller = controller
+
         
     def update(self, sim: Any, dt: float) -> None:
         """

@@ -6,6 +6,7 @@ import numpy as np
 
 from objects.obj import Object
 from objects.block import Block
+from arm.arm import Arm
 
 """
 This module contains the Ball class.
@@ -36,6 +37,22 @@ class Ball(Object):
         self.radius = radius
         self.mass = mass
         self.color = color
+        
+        # If the ball is being held
+        self.held = False
+        # The arm that is holding the ball
+        self.holder = None
+    
+    def set_held(self, held: bool, holder: Optional[Arm] = None) -> None:
+        """
+        Set if the ball is being held
+
+        Args:
+        - held: If the ball is being held
+        - holder: The arm that is holding the ball
+        """
+        self.held = held
+        self.holder = holder
     
     def update(self, dt: float, others: Set[Ball]) -> None:
         """
@@ -45,6 +62,11 @@ class Ball(Object):
         - dt: Delta time
         - others: The other balls to check collisions with
         """
+        # If the ball is being held, update its position
+        if self.held:
+            self.pos = self.holder.get_end_effector_pos()
+            return
+
         self.apply_gravity()
         self.apply_friction()
 

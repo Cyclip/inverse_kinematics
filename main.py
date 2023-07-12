@@ -7,10 +7,10 @@ from arm import controllers
 
 if __name__ == "__main__":
     s = sim.Simulation()
-    s.set_scene(scenes.FollowMouseScene)
+    s.set_scene(scenes.FillJarScene)
     s.set_controller(controllers.SGDController(
-        alpha=0.0001,
-        weight_decay=-1,
-        epochs=10
+        alpha=0.00012,
+        weight_decay=0,
+        epochs=5
     ))
     s.run()

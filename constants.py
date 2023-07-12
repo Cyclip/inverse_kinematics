@@ -1,4 +1,7 @@
 from typing import *
+import pygame
+
+pygame.font.init()
 
 # Gravitational constant
 GRAVITY: float = 9.8
@@ -23,3 +26,9 @@ GRID_SIZE: int = 50
 
 # Arm width
 ARM_WIDTH: int = 10
+
+# Font
+FONT: pygame.font.Font = pygame.font.SysFont("Arial", 20)
+
+# Arm end radius
+ARM_END_RADIUS: int = 12
