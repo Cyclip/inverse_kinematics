@@ -8,6 +8,7 @@ from objects.ball import Ball
 from objects.block import Block
 from tasks import taskManager
 from tasks.task import follow_linear_path, Wait, MoveToBall, HoldBall, MoveArm, ReleaseBall, MoveRelative
+from colors import gen_colours
 
 class FillJarScene(SceneSetter):
     """
@@ -158,7 +159,11 @@ class FillJarScene(SceneSetter):
         return jar
 
     def __make_balls(self, sim: Any) -> None:
-        # form a grid of balls above the left jar
+        # colours
+        colours = gen_colours((214, 56, 45), self.NUM_BALLS ** 2)
+        print(colours)
+
+        # form a grid of balls above the left jar        
         self.balls = []
         for i in range(self.NUM_BALLS):
             for j in range(self.NUM_BALLS):
@@ -168,7 +173,7 @@ class FillJarScene(SceneSetter):
                         15,
                         0.5,
                         # purple
-                        (255, 0, 255)
+                        colours[i * self.NUM_BALLS + j]
                     )
                 )
 

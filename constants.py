@@ -34,4 +34,8 @@ ARM_WIDTH: int = 10
 FONT: pygame.font.Font = pygame.font.SysFont("Arial", 20)
 
 # Arm end radius
-ARM_END_RADIUS: int = 13
+ARM_END_RADIUS: int = 15
+
+# Colours
+BG_COLOUR: Tuple[int, int, int] = (8, 5, 13)
+BLOCK_COLOUR: Tuple[int, int, int] = (255, 255, 255)

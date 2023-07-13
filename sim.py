@@ -56,16 +56,10 @@ class Simulation:
             
             # Get delta time
             # dt = clock.tick() / 1000
-            dt = 0.2 / 2
+            dt = 0.1
 
             # Clear the screen
-            self.surface.fill((0, 0, 0))
-
-            # draw grid
-            for i in range(const.RESOLUTION[0] // const.GRID_SIZE):
-                pygame.draw.line(self.surface, (4, 4, 4), (i * const.GRID_SIZE, 0), (i * const.GRID_SIZE, const.RESOLUTION[1]))
-            for j in range(const.RESOLUTION[1] // const.GRID_SIZE):
-                pygame.draw.line(self.surface, (4, 4, 4), (0, j * const.GRID_SIZE), (const.RESOLUTION[0], j * const.GRID_SIZE))
+            self.surface.fill(const.BG_COLOUR)
 
             # Update the objects
             self.scene.update(self, dt)
