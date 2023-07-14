@@ -11,6 +11,6 @@ if __name__ == "__main__":
     s.set_controller(controllers.SGDController(
         alpha=0.00012,
         weight_decay=0.001,
-        epochs=5
+        epochs=6,
     ))
     s.run()

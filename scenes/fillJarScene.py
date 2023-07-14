@@ -41,7 +41,7 @@ class FillJarScene(SceneSetter):
                 const.RESOLUTION[0] // 2,
                 const.RESOLUTION[1] // 2 - 100
             ]),
-            95,
+            70,
             5,
             (255, 255, 255),
             (255, 0, 0)
@@ -77,7 +77,7 @@ class FillJarScene(SceneSetter):
         arm = self.arm
 
         self.taskManager.add_task(
-            Wait(controller, arm, 30)
+            Wait(controller, arm, 100)
         )
 
         # Create a move_ball task for each ball
@@ -182,7 +182,7 @@ class FillJarScene(SceneSetter):
 
                 # random velocity
                 self.balls[-1].apply_impulse(
-                    np.random.uniform(-10, 10, 2)
+                    np.random.uniform(-50, 50, 2)
                 )
     
     def update(self, sim: Any, dt: float) -> None:

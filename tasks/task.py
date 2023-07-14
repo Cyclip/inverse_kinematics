@@ -64,10 +64,8 @@ class MoveArm(Task):
 
         # Check if the arm is at the target
         armpos = self.arm.get_end_effector_pos()
-        if np.linalg.norm(armpos - self.target) < const.ARM_END_RADIUS:
+        if np.linalg.norm(armpos - self.target) < const.ARM_END_RADIUS + 10:
             self.done = True
-            self.arm.vel = np.zeros(2, dtype=np.float64)
-            self.arm.acc = np.zeros(2, dtype=np.float64)
     
     def __str__(self) -> str:
         return f"Move arm to {round(self.target[0])}, {round(self.target[1])} (distance: {round(np.linalg.norm(self.arm.get_end_effector_pos() - self.target))})))"
@@ -94,7 +92,7 @@ class MoveRelative(Task):
 
         # Check if the arm is at the target
         armpos = self.arm.get_end_effector_pos()
-        if np.linalg.norm(armpos - self.target) < const.ARM_END_RADIUS:
+        if np.linalg.norm(armpos - self.target) < const.ARM_END_RADIUS + 10:
             self.done = True
             self.arm.vel = np.zeros(2, dtype=np.float64)
             self.arm.acc = np.zeros(2, dtype=np.float64)
